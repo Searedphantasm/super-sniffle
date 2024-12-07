@@ -5,6 +5,8 @@ import {
     Scripts, ScrollRestoration,
 } from "@remix-run/react";
 
+import styles from "./styles/main.css";
+
 export default function App() {
     return (
         <html lang="en">
@@ -15,6 +17,7 @@ export default function App() {
             />
             <Meta />
             <Links />
+            <title>Remix Home</title>
         </head>
         <body>
             <Outlet />
@@ -24,4 +27,11 @@ export default function App() {
         </body>
         </html>
     );
+}
+
+export function links(){
+    return [{
+        rel:"stylesheet",
+        href:styles,
+    }]
 }
