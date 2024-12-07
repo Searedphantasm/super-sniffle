@@ -1,7 +1,7 @@
 import NewNote , {links as newNoteLinks} from "../components/NewNote.jsx"
 import NoteList, {links as noteListLinks} from "../components/NoteList.jsx"
 import {getStoredNotes, storeNotes} from "../data/notes.js";
-import {Link, redirect, useLoaderData, useRouteError} from "@remix-run/react";
+import {isRouteErrorResponse, Link, redirect, useLoaderData, useRouteError} from "@remix-run/react";
 
 const NotesPage = () => {
     const notes = useLoaderData();
@@ -17,6 +17,14 @@ const NotesPage = () => {
 // activated when a GET request reach this route.
 export async function loader(){
     const notes = await getStoredNotes();
+
+    if (!notes || notes.length === 0 ) {
+        // a thrown Response rendered the closest ErrorBoundary.
+        throw new Response("No notes found.",{
+            status: 404,
+            statusText: "Not Found",
+        });
+    }
 
     // returns to the frontend
     // if the user is visiting our website for the firstTime it will render on the serverside.
@@ -58,10 +66,31 @@ export function links() {
     return [...newNoteLinks(),...noteListLinks()];
 }
 
+export function meta() {
+    return [{
+        title: "All Notes",
+        description: "Manage your notes with ease",
+    }]
+}
+
 export function ErrorBoundary() {
     const error = useRouteError();
+
+    // when true, this is what used to go to `CatchBoundary`
+    if (isRouteErrorResponse(error)) {
+        return (
+            <main>
+                <NewNote />
+                <p className={"info-message"}>{error.data}</p>
+            </main>
+        );
+    }
+
+    // Any value can be thrown, not just errors!
+
     return (
         <main className={"error"}>
+
             <h1>
                 An error related to your notes occurred!
             </h1>

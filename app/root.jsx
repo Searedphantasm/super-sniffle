@@ -9,6 +9,12 @@ import {
 import styles from "./styles/main.css";
 import MainNavigation from "./components/MainNavigation.jsx";
 
+export const meta = () => ([{
+    charset: "utf-8",
+    title:"Remix note App",
+    viewport: "width=device-width, initial-scale=1.0",
+}])
+
 export default function App() {
     return (
         <html lang="en">
@@ -51,7 +57,9 @@ export function ErrorBoundary() {
         <header>
             <MainNavigation />
         </header>
-
+        {error && (
+            <p></p>
+        )}
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
